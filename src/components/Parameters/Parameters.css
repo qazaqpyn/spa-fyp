@@ -1,0 +1,15 @@
+.form-parameters{
+    width: 40rem;
+    max-width: 100%;
+    margin: auto;
+    position: relative;
+    border-style: dashed;
+    border-color: #cbd5e1;
+    background-color: #f8fafc;
+    border-width: 2px;
+    border-radius: 1rem;
+    padding: 1rem 1rem 0  1rem;
+    > div{
+        margin-bottom: 1rem;
+    }
+}
