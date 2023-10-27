@@ -1,29 +1,59 @@
 import React from 'react';
 import { FC, useState } from 'react';
 import './Parameters.css';
+import { Iparameters } from '../../App';
+
+interface ParametersProps {
+    data: Iparameters | null;
+    setParameters: (data: Iparameters) => void;
+}
 
 type KdvType = 'KDV' | 'SRKDV';
 
-export const Parameters: FC = () => {
+export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
+    const [next, setNext] = useState<boolean>(false);
     const [kdvType, setKdvType] = useState<KdvType>('KDV');
-    const [gps, setGps] = useState<boolean>(true);
+    const [gps, setGps] = useState<boolean>(false);
     const [bandwidthS, setBandwidthS] = useState<number>(1000);
     const [rowP, setRowP] = useState<number>(800);
     const [colP, setColP] = useState<number>(640);
     const [bandwidthT, setBandwidthT] = useState<number>(6);
     const [tPixel, setTPixel] = useState<number>(32);
     const [nThreads, setNThreads] = useState<number>(8);
+    const setParametersHandler = () => {
+        setNext(true);
+        setParameters({
+            kdvType,
+            gps,
+            bandwidthS,
+            rowP,
+            colP,
+            bandwidthT,
+            tPixel,
+            nThreads,
+        });
+    };
+
+    const edit = () => {
+        setNext(false);
+    };
 
     return (
         <div className="w-100">
-            <h2 className="text-lg font-weight-bold text-center">Set up parameters</h2>
+            <h2 className="text-lg font-weight-bold text-center">{next ? 'Parameters' : 'Set up parameters'}</h2>
             <div className="form-parameters">
+                {next && (
+                    <div className="delete" onClick={edit}>
+                        <span className="text-danger align-baseline">X</span>
+                    </div>
+                )}
                 <div className="form-group row">
                     <label className="col-sm-7 col-form-label" htmlFor="kdvType">
                         KDV Type:
                     </label>
                     <div className="col-sm">
                         <select
+                            disabled={next}
                             className="form-control"
                             name="kdvType"
                             id="kdvType"
@@ -37,6 +67,7 @@ export const Parameters: FC = () => {
                 </div>
                 <div className="form-check">
                     <input
+                        disabled={next}
                         className="form-check-input"
                         type="checkbox"
                         name="gps"
@@ -54,6 +85,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="bandwidthS"
@@ -69,6 +101,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="rowP"
@@ -84,6 +117,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="colP"
@@ -99,6 +133,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="bandwidthT"
@@ -114,6 +149,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="tPixel"
@@ -129,6 +165,7 @@ export const Parameters: FC = () => {
                     </label>
                     <div className="col-sm">
                         <input
+                            disabled={next}
                             className="form-control"
                             type="number"
                             name="nThreads"
@@ -139,6 +176,14 @@ export const Parameters: FC = () => {
                     </div>
                 </div>
             </div>
+
+            {!next && (
+                <div className="next-button">
+                    <button id="button" className="btn" onClick={setParametersHandler}>
+                        Next
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
