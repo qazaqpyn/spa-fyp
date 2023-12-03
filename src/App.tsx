@@ -3,6 +3,7 @@ import { DragDropFile } from './components/DragDropFile';
 import { Parameters } from './components/Parameters';
 import { Loading } from './components/Loading';
 import { postApi } from './api/requests';
+import { Map } from './components/Map';
 
 export interface Iparameters {
     kdvType: 'KDV' | 'SRKDV';
@@ -33,6 +34,7 @@ export default function App() {
 
     return (
         <div>
+            <Map />
             {loading && <Loading />}
             <DragDropFile file={file} setFile={setFile} />
             {file && <Parameters data={parameters} setParameters={setParameters} />}
