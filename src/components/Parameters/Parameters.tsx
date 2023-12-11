@@ -5,7 +5,7 @@ import { Iparameters } from '../../App';
 
 interface ParametersProps {
     data: Iparameters | null;
-    setParameters: (data: Iparameters) => void;
+    setParameters: (data: Iparameters | null) => void;
 }
 
 type KdvType = 'KDV' | 'SRKDV';
@@ -36,6 +36,7 @@ export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
 
     const edit = () => {
         setNext(false);
+        setParameters(null);
     };
 
     return (
