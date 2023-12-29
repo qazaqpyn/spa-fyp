@@ -28,7 +28,6 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData }) =
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
-        console.log(e);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
@@ -39,7 +38,6 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData }) =
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         e.preventDefault();
         e.stopPropagation();
-        console.log(e);
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);

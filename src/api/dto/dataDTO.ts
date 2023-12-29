@@ -1,6 +1,6 @@
 export interface DataResponse {
   middle: number[];
-  data: number[][];
+  data: (string | number)[][];
 }
 
 export interface Iparameters {

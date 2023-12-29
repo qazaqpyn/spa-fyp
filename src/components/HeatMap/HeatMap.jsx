@@ -5,11 +5,11 @@ import { useEffect } from 'react';
 import { addressPoints } from '../../assets/data';
 import 'leaflet/dist/leaflet.css';
 
-export const HeatMap = () => {
+export const HeatMap = ({data}) => {
     const map = useMap();
     useEffect(() => {
-        const points = addressPoints
-            ? addressPoints.map((p) => {
+        const points = data
+            ? data.map((p) => {
                   return [p[0], p[1], p[2]]; // lat lng intensity
               })
             : [];

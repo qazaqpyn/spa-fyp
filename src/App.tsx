@@ -7,6 +7,7 @@ import { Map } from './components/Map';
 import { DataResponse } from './api/dto/dataDTO';
 import { DataRequest } from './api/dto/dataDTO';
 import { Iparameters } from './api/dto/dataDTO';
+import { addressPoints } from './assets/data';
 
 export default function App() {
     const [fileData, setFile] = useState<number[][] | null>(null);
@@ -17,19 +18,26 @@ export default function App() {
         if (!fileData && !parameters) return;
         setLoading(true);
 
-        const body: DataRequest = {
-            data: fileData || [],
-            params: parameters || {},
-        };
-
-        console.log(body);
-
-        const data = postApi('generate', body);
-        data.then((res) => {
-            setResult(res as DataResponse);
-        }).finally(() => {
+        setTimeout(() => {
             setLoading(false);
+        }, 2000);
+
+        setResult({
+            middle: [-37.8839, 175.3745188667],
+            data: addressPoints,
         });
+
+        // const body: DataRequest = {
+        //     data: fileData || [],
+        //     params: parameters || {},
+        // };
+
+        // const data = postApi('generate', body);
+        // data.then((res) => {
+        //     setResult(res as DataResponse);
+        // }).finally(() => {
+        //     setLoading(false);
+        // });
     };
     const reset = () => {
         setLoading(true);
@@ -66,7 +74,7 @@ export default function App() {
             {result && (
                 <>
                     <h2 className="text-lg font-weight-bold text-center">Dataset Visualization on Map </h2>
-                    <Map />
+                    <Map result={result} />
                     <div className="next-button">
                         <button id="button" className="btn" onClick={download}>
                             Download
