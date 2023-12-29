@@ -1,5 +1,6 @@
 import React from 'react';
 import { DragEventHandler, FC, useRef, useState } from 'react';
+import { readCSVFile } from '../../utils/parser';
 import './DragDropFile.css';
 
 interface DragDropFileProps {
@@ -30,6 +31,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
+            readCSVFile(e.dataTransfer.files[0]);
         }
     };
 
@@ -40,6 +42,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);
+            readCSVFile(e.target.files[0]);
         }
     };
 
@@ -53,7 +56,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
 
     const checkFileExtension = (fileName: string): boolean => {
         const fileExtension = fileName.split('.').pop();
-        if (fileExtension !== 'pdf') {
+        if (fileExtension !== 'csv') {
             setError('File should be in csv format');
             setFile(null);
             return false;
