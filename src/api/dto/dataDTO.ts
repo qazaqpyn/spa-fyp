@@ -1,9 +1,20 @@
 
 export interface DataResponse {
   middle: number[];
-  data: number[];
+  data: number[][];
 }
 
-export interface DataRequest {
 
+export interface DataRequest {
+  params: {
+    kdvType: 'KDV' | 'SRKDV';
+    gps: boolean;
+    bandwidthS: number;
+    rowP: number;
+    colP: number;
+    bandwidthT: number;
+    tPixel: number;
+    nThreads: number;
+  }
+  data: number[][];
 }

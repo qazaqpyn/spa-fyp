@@ -37,7 +37,7 @@ export default function App() {
         // });
         setResult({
             middle: [0, 0],
-            data: [0, 0],
+            data: [[0, 0]],
         });
     };
     const reset = () => {
