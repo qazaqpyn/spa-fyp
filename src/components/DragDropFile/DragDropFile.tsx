@@ -4,11 +4,12 @@ import { readCSVFile } from '../../utils/parser';
 import './DragDropFile.css';
 
 interface DragDropFileProps {
-    file: File | null;
-    setFile: (file: File | null) => void;
+    fileData: number[][] | null;
+    setFileData: React.Dispatch<React.SetStateAction<number[][] | null>>;
 }
 
-export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
+export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData }) => {
+    const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +32,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
-            readCSVFile(e.dataTransfer.files[0]);
+            readCSVFile(e.dataTransfer.files[0]).then((res) => setFileData(res));
         }
     };
 
@@ -42,7 +43,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);
-            readCSVFile(e.target.files[0]);
+            readCSVFile(e.target.files[0]).then((res) => setFileData(res));
         }
     };
 
@@ -58,7 +59,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
         const fileExtension = fileName.split('.').pop();
         if (fileExtension !== 'csv') {
             setError('File should be in csv format');
-            setFile(null);
+            setFileData(null);
             return false;
         }
         return true;
@@ -66,12 +67,13 @@ export const DragDropFile: FC<DragDropFileProps> = ({ file, setFile }) => {
 
     const resetAll = () => {
         setFile(null);
+        setFileData(null);
         setError(null);
     };
 
     return (
         <div className="container-fluid text-center p-2">
-            {file ? (
+            {file && fileData ? (
                 <div className="w-100 d-flex justify-content-center ">
                     <div className="card w-50 bg-light border-success">
                         <div className="delete" onClick={resetAll}>

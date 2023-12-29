@@ -5,39 +5,30 @@ import { Loading } from './components/Loading';
 import { postApi } from './api/requests';
 import { Map } from './components/Map';
 import { DataResponse } from './api/dto/dataDTO';
-
-export interface Iparameters {
-    kdvType: 'KDV' | 'SRKDV';
-    gps: boolean;
-    bandwidthS: number;
-    rowP: number;
-    colP: number;
-    bandwidthT: number;
-    tPixel: number;
-    nThreads: number;
-}
+import { DataRequest } from './api/dto/dataDTO';
+import { Iparameters } from './api/dto/dataDTO';
 
 export default function App() {
-    const [file, setFile] = useState<File | null>(null);
+    const [fileData, setFile] = useState<number[][] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [parameters, setParameters] = useState<Iparameters | null>(null);
     const [result, setResult] = useState<DataResponse | null>(null);
     const submit = async () => {
-        if (!file) return;
+        if (!fileData && !parameters) return;
         setLoading(true);
-        setTimeout(() => {
+
+        const body: DataRequest = {
+            data: fileData || [],
+            params: parameters || {},
+        };
+
+        console.log(body);
+
+        const data = postApi('generate', body);
+        data.then((res) => {
+            setResult(res as DataResponse);
+        }).finally(() => {
             setLoading(false);
-        }, 2000);
-        const formData = new FormData();
-        formData.append('file', file as Blob, file.name);
-        formData.append('parameters', JSON.stringify(parameters));
-        // const data = postApi('generate', formData);
-        // data.then((res) => {
-        //     setResult(res as DataResponse);
-        // });
-        setResult({
-            middle: [0, 0],
-            data: [[0, 0]],
         });
     };
     const reset = () => {
@@ -61,9 +52,9 @@ export default function App() {
             {loading && <Loading />}
             {!result && (
                 <>
-                    <DragDropFile file={file} setFile={setFile} />
-                    {file && <Parameters data={parameters} setParameters={setParameters} />}
-                    {parameters && file && (
+                    <DragDropFile fileData={fileData} setFileData={setFile} />
+                    {fileData && <Parameters data={parameters} setParameters={setParameters} />}
+                    {parameters && fileData && (
                         <div className="next-button">
                             <button id="button" className="btn" onClick={submit}>
                                 Generate result
