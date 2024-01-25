@@ -35,7 +35,6 @@ const parseCSVData = (csvData: string): number[][] => {
     },
     complete: () => {
       console.log("Parsing completed");
-      console.log(results) // Do something with the parsed CSV data
     },
     error: (error) => {
       console.error('Error parsing CSV data:', error);
