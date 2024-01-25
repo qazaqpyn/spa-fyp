@@ -18,26 +18,26 @@ export default function App() {
         if (!fileData && !parameters) return;
         setLoading(true);
 
-        // setTimeout(() => {
-        //     setLoading(false);
-        //     setResult({
-        //         middle: [-37.8839, 175.3745188667],
-        //         data: addressPoints,
-        //     });
-        // }, 2000);
-
-        const body: DataRequest = {
-            data: fileData || [],
-            params: parameters || {},
-        };
-
-        const data = postApi('generate', body);
-        data.then((res) => {
-            setResult(res as DataResponse);
-            console.log(res);
-        }).finally(() => {
+        setTimeout(() => {
             setLoading(false);
-        });
+            setResult({
+                middle: [-37.8839, 175.3745188667],
+                data: addressPoints,
+            });
+        }, 2000);
+
+        // const body: DataRequest = {
+        //     data: fileData || [],
+        //     params: parameters || {},
+        // };
+
+        // const data = postApi('generate', body);
+        // data.then((res) => {
+        //     setResult(res as DataResponse);
+        //     console.log(res);
+        // }).finally(() => {
+        //     setLoading(false);
+        // });
     };
     const reset = () => {
         setLoading(true);
@@ -60,7 +60,7 @@ export default function App() {
             {loading && <Loading />}
             {!result && (
                 <>
-                    <DragDropFile fileData={fileData} setFileData={setFile} />
+                    <DragDropFile fileData={fileData} setFileData={setFile} setLoading={setLoading} />
                     {fileData && <Parameters data={parameters} setParameters={setParameters} />}
                     {parameters && fileData && (
                         <div className="next-button">

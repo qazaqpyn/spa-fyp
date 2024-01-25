@@ -23,19 +23,19 @@ const parseCSVData = (csvData: string): number[][] => {
   const results: number[][] = [];
 
   const parsedData = Papa.parse(csvData, {
-    header: true,
+    header: false,
     dynamicTyping: true,
     skipEmptyLines: true,
-    transformHeader: (header) => header.trim(),
-    transform: (value) => value.trim(),
+    fastMode: true,
     step: (row) => {
-      if (row.errors.length === 0) {
-        const rowData: number[] = [row.data.lon, row.data.lat];
+      if (row.errors.length === 0 && typeof row.data[0] === 'number' && typeof row.data[1] === 'number') {
+        const rowData: number[] = [row.data[0], row.data[1]];
         results.push(rowData);
       }
     },
     complete: () => {
-      console.log("Parsing completed"); // Do something with the parsed CSV data
+      console.log("Parsing completed");
+      console.log(results) // Do something with the parsed CSV data
     },
     error: (error) => {
       console.error('Error parsing CSV data:', error);

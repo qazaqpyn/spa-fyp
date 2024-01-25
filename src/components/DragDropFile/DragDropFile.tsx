@@ -6,9 +6,10 @@ import './DragDropFile.css';
 interface DragDropFileProps {
     fileData: number[][] | null;
     setFileData: React.Dispatch<React.SetStateAction<number[][] | null>>;
+    setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData }) => {
+export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, setLoading }) => {
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -25,23 +26,29 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData }) =
     };
 
     const handleDrop = (e: React.DragEvent<HTMLFormElement>) => {
+        setLoading(true);
         e.preventDefault();
         e.stopPropagation();
         setDragActive(false);
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
-            readCSVFile(e.dataTransfer.files[0]).then((res) => setFileData(res));
+            readCSVFile(e.dataTransfer.files[0])
+                .then((res) => setFileData(res))
+                .finally(() => setLoading(false));
         }
     };
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setLoading(true);
         e.preventDefault();
         e.stopPropagation();
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);
-            readCSVFile(e.target.files[0]).then((res) => setFileData(res));
+            readCSVFile(e.target.files[0])
+                .then((res) => setFileData(res))
+                .finally(() => setLoading(false));
         }
     };
 
