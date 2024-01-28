@@ -1,12 +1,12 @@
 import Papa from 'papaparse';
 
-export const readCSVFile = (file: File): Promise<number[][]> => {
+export const readCSVFile = (file: File, type: 'KDV' | 'STKDV'): Promise<number[][]> => {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
     reader.onload = (event) => {
       if (event.target && event.target.result) {
         const csvData = event.target.result.toString();
-        const parsedData = parseCSVData(csvData);
+        const parsedData = parseCSVData(csvData, type === 'KDV');
         resolve(parsedData);
       } else {
         reject(new Error('Failed to read file'));
@@ -19,7 +19,7 @@ export const readCSVFile = (file: File): Promise<number[][]> => {
   });
 };
 
-const parseCSVData = (csvData: string): number[][] => {
+const parseCSVData = (csvData: string, isKDV: boolean): number[][] => {
   const results: number[][] = [];
 
   const parsedData = Papa.parse(csvData, {
@@ -29,7 +29,7 @@ const parseCSVData = (csvData: string): number[][] => {
     fastMode: true,
     step: (row) => {
       if (row.errors.length === 0 && typeof row.data[0] === 'number' && typeof row.data[1] === 'number') {
-        const rowData: number[] = [row.data[0], row.data[1]];
+        const rowData: number[] = isKDV ? [row.data[0], row.data[1]] : [row.data[0], row.data[1], row.data[2]];
         results.push(rowData);
       }
     },

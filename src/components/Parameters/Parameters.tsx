@@ -1,19 +1,22 @@
 import React from 'react';
 import { FC, useState } from 'react';
 import './Parameters.css';
-import { Iparameters } from '../../App';
+import { IKDVParams, ISTKDVParams } from '../../repo/Paramater';
 
 interface ParametersProps {
-    data: Iparameters | null;
-    setParameters: (data: Iparameters | null) => void;
+    session: ParameterSession;
+}
+
+interface ParameterSession {
+    type: 'KDV' | 'STKDV';
+    createKDVParmater(params: IKDVParams): void;
+    createSTKDVParmater(params: ISTKDVParams): void;
 }
 
 type KdvType = 'KDV' | 'SRKDV';
 
-export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
+export const Parameters: FC<ParametersProps> = ({ session }) => {
     const [next, setNext] = useState<boolean>(false);
-    const [kdvType, setKdvType] = useState<KdvType>('KDV');
-    const [gps, setGps] = useState<boolean>(false);
     const [bandwidthS, setBandwidthS] = useState<number>(1000);
     const [rowP, setRowP] = useState<number>(800);
     const [colP, setColP] = useState<number>(640);
@@ -21,22 +24,30 @@ export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
     const [tPixel, setTPixel] = useState<number>(32);
     const [nThreads, setNThreads] = useState<number>(8);
     const setParametersHandler = () => {
+        if (isKDV)
+            session.createKDVParmater({
+                bandwidthS,
+                rowP,
+                colP,
+                nThreads,
+            });
+        else
+            session.createSTKDVParmater({
+                bandwidthS,
+                rowP,
+                colP,
+                bandwidthT,
+                tPixel,
+                nThreads,
+            });
+
         setNext(true);
-        setParameters({
-            kdvType,
-            gps,
-            bandwidthS,
-            rowP,
-            colP,
-            bandwidthT,
-            tPixel,
-            nThreads,
-        });
     };
+
+    const isKDV = session.type === 'KDV';
 
     const edit = () => {
         setNext(false);
-        setParameters(null);
     };
 
     return (
@@ -48,34 +59,8 @@ export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
                         <span className="text-danger align-baseline">X</span>
                     </div>
                 )}
-                <div className="form-group row">
-                    <label className="col-sm-7 col-form-label" htmlFor="kdvType">
-                        KDV Type:
-                    </label>
-                    <div className="col-sm">
-                        <select
-                            disabled={next}
-                            className="form-control"
-                            name="kdvType"
-                            id="kdvType"
-                            value={kdvType}
-                            onChange={(e) => setKdvType(e.target.value as KdvType)}
-                        >
-                            <option value="KDV">Single KDV</option>
-                            <option value="SRKDV">Spatio-Temporal KDV</option>
-                        </select>
-                    </div>
-                </div>
                 <div className="form-check">
-                    <input
-                        disabled={next}
-                        className="form-check-input"
-                        type="checkbox"
-                        name="gps"
-                        id="gps"
-                        checked={gps}
-                        onChange={(e) => setGps(e.target.checked)}
-                    />
+                    <input disabled className="form-check-input" type="checkbox" name="gps" id="gps" checked />
                     <label htmlFor="gps" className="form-check-label">
                         GPS (use geographic coordinate system)
                     </label>
@@ -128,38 +113,42 @@ export const Parameters: FC<ParametersProps> = ({ data, setParameters }) => {
                         />
                     </div>
                 </div>
-                <div className="form-group row">
-                    <label className="col-sm-7 col-form-label" htmlFor="bandwidthT">
-                        Temporal bandwidth (in terms of days)
-                    </label>
-                    <div className="col-sm">
-                        <input
-                            disabled={next}
-                            className="form-control"
-                            type="number"
-                            name="bandwidthT"
-                            id="bandwidthT"
-                            value={bandwidthT}
-                            onChange={(e) => setBandwidthT(Number(e.target.value))}
-                        />
+                ({isKDV} &&
+                <>
+                    <div className="form-group row">
+                        <label className="col-sm-7 col-form-label" htmlFor="bandwidthT">
+                            Temporal bandwidth (in terms of days)
+                        </label>
+                        <div className="col-sm">
+                            <input
+                                disabled={next}
+                                className="form-control"
+                                type="number"
+                                name="bandwidthT"
+                                id="bandwidthT"
+                                value={bandwidthT}
+                                onChange={(e) => setBandwidthT(Number(e.target.value))}
+                            />
+                        </div>
                     </div>
-                </div>
-                <div className="form-group row">
-                    <label className="col-sm-7 col-form-label" htmlFor="tPixel">
-                        Number of grids in the t-axis
-                    </label>
-                    <div className="col-sm">
-                        <input
-                            disabled={next}
-                            className="form-control"
-                            type="number"
-                            name="tPixel"
-                            id="tPixel"
-                            value={tPixel}
-                            onChange={(e) => setTPixel(Number(e.target.value))}
-                        />
+                    <div className="form-group row">
+                        <label className="col-sm-7 col-form-label" htmlFor="tPixel">
+                            Number of grids in the t-axis
+                        </label>
+                        <div className="col-sm">
+                            <input
+                                disabled={next}
+                                className="form-control"
+                                type="number"
+                                name="tPixel"
+                                id="tPixel"
+                                value={tPixel}
+                                onChange={(e) => setTPixel(Number(e.target.value))}
+                            />
+                        </div>
                     </div>
-                </div>
+                </>
+                )
                 <div className="form-group row">
                     <label className="col-sm-7 col-form-label" htmlFor="nThreads">
                         Number of threads

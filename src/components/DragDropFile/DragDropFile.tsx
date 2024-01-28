@@ -4,12 +4,15 @@ import { readCSVFile } from '../../utils/parser';
 import './DragDropFile.css';
 
 interface DragDropFileProps {
-    fileData: number[][] | null;
-    setFileData: React.Dispatch<React.SetStateAction<number[][] | null>>;
+    session: FileSession;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, setLoading }) => {
+interface FileSession {
+    createDataset(file: File): Promise<void>;
+}
+
+export const DragDropFile: FC<DragDropFileProps> = ({ session, setLoading }) => {
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -33,9 +36,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, set
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
-            readCSVFile(e.dataTransfer.files[0])
-                .then((res) => setFileData(res))
-                .finally(() => setLoading(false));
+            session.createDataset(e.dataTransfer.files[0]).finally(() => setLoading(false));
         }
     };
 
@@ -46,9 +47,7 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, set
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);
-            readCSVFile(e.target.files[0])
-                .then((res) => setFileData(res))
-                .finally(() => setLoading(false));
+            session.createDataset(e.target.files[0]).finally(() => setLoading(false));
         }
     };
 
@@ -64,7 +63,6 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, set
         const fileExtension = fileName.split('.').pop();
         if (fileExtension !== 'csv') {
             setError('File should be in csv format');
-            setFileData(null);
             return false;
         }
         return true;
@@ -72,13 +70,12 @@ export const DragDropFile: FC<DragDropFileProps> = ({ fileData, setFileData, set
 
     const resetAll = () => {
         setFile(null);
-        setFileData(null);
         setError(null);
     };
 
     return (
         <div className="container-fluid text-center p-2">
-            {file && fileData ? (
+            {file ? (
                 <div className="w-100 d-flex justify-content-center ">
                     <div className="card w-50 bg-light border-success">
                         <div className="delete" onClick={resetAll}>

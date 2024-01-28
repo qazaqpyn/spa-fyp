@@ -6,14 +6,19 @@ import { postApi } from './api/requests';
 import { Map } from './components/Map';
 import { DataResponse } from './api/dto/dataDTO';
 import { DataRequest } from './api/dto/dataDTO';
-import { Iparameters } from './api/dto/dataDTO';
 import { addressPoints } from './assets/data';
+import { Session } from './repo/Session';
 
 export default function App() {
+    const [session, setSession] = useState<Session | null>(null);
     const [fileData, setFile] = useState<number[][] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
     const [parameters, setParameters] = useState<Iparameters | null>(null);
     const [result, setResult] = useState<DataResponse | null>(null);
+    const createSession = (type: 'KDV' | 'STKDV') => {
+        const session = new Session(type);
+        setSession(session);
+    };
     const submit = async () => {
         if (!fileData && !parameters) return;
         setLoading(true);
@@ -60,8 +65,8 @@ export default function App() {
             {loading && <Loading />}
             {!result && (
                 <>
-                    <DragDropFile fileData={fileData} setFileData={setFile} setLoading={setLoading} />
-                    {fileData && <Parameters data={parameters} setParameters={setParameters} />}
+                    <DragDropFile session={session!} setLoading={setLoading} />
+                    {fileData && <Parameters session={session!} />}
                     {parameters && fileData && (
                         <div className="next-button">
                             <button id="button" className="btn" onClick={submit}>

@@ -3,6 +3,7 @@ import { KDVData, STKDVData } from "./CalculatedData";
 import { Dataset } from "./Dataset";
 import { IKDVParams, ISTKDVParams, KDVParamater, STKDVParamater } from "./Paramater";
 import { postApi } from "../api/requests";
+import { readCSVFile } from "../utils/parser";
 
 
 export class Session {
@@ -20,18 +21,6 @@ export class Session {
         this.kdvCalculatedData = null;
         this.stKdvCalculatedData = null;
         this.dataset = null;
-    }
-
-    public createKDVParmater(params: IKDVParams): void {
-        this.kdvParamater = new KDVParamater(params);
-    }
-
-    public createSTKDVParmater(params: ISTKDVParams): void {
-        this.stKdvParamater = new STKDVParamater(params);
-    }
-
-    private createDataset(file: File): void {
-        this.dataset = new Dataset(file);
     }
 
     private createKDVData(data: DataResponse): void {
@@ -58,7 +47,15 @@ export class Session {
         }
     }
 
-    public async getCalculatedData() {
+    public async createDataset(file: File): Promise<void> {
+        this.dataset = new Dataset(file);
+
+        readCSVFile(file, this.type).then((data) => {
+            this.dataset!.setParsedData(data);
+        });
+    }
+
+    public async fetchCalculatedData() {
         if (!this.checkCalculatedData() || !this.checkParams()) return;
         
         const isKDV = this.type === 'KDV';
@@ -72,5 +69,13 @@ export class Session {
         };
 
         postApi(endpoint, body).then(createData);
+    } 
+
+    public createKDVParmater(params: IKDVParams): void {
+        this.kdvParamater = new KDVParamater(params);
+    }
+
+    public createSTKDVParmater(params: ISTKDVParams): void {
+        this.stKdvParamater = new STKDVParamater(params);
     }
 }
