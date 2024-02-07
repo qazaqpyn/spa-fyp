@@ -1,23 +1,26 @@
 import React from 'react';
-import { FC } from 'react';
+import './Typer.css';
+import { Button } from '../Button';
 import { Session } from '../../repo/Session';
 
-// React component for Two button for two types KDV and STKDV and after clicking it will show the result
 interface TyperProps {
-    createSession: (type: 'KDV' | 'STKDV') => void;
+    setSession: React.Dispatch<React.SetStateAction<Session | null>>;
 }
 
-export const Typer: FC<TyperProps> = ({ createSession }) => {
+export const Typer: React.FC<TyperProps> = ({ setSession }) => {
+    const createSession = (type: 'KDV' | 'STKDV') => {
+        const session = new Session(type);
+        setSession(session);
+    };
+
     return (
-        <div>
-            <h2 className="text-lg font-weight-bold text-center">Choose type</h2>
-            <div className="d-flex justify-content-center">
-                <button className="btn btn-primary" onClick={() => createSession('KDV')}>
-                    Single KDV
-                </button>
-                <button className="btn btn-primary" onClick={() => createSession('STKDV')}>
-                    Spatio-Temporal KDV
-                </button>
+        <div className="types">
+            <div className="type-buttons-header">
+                <h1>Choose a KDV type</h1>
+            </div>
+            <div className="type-buttons">
+                <Button title="" description="Single KDV" onClick={() => createSession('KDV')} />
+                <Button title="" description="Spatio-Temporal KDV" onClick={() => createSession('STKDV')} />
             </div>
         </div>
     );

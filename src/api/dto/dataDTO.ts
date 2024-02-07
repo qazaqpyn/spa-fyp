@@ -9,7 +9,6 @@ export interface STDataResponse {
 }
 
 export interface IKDVparameters {
-  kdvType: string;
   bandwidthS: number;
   rowP: number;
   colP: number;
@@ -17,17 +16,10 @@ export interface IKDVparameters {
 }
 
 export interface ISTKDVparameters {
-  kdvType: string;
   bandwidthS: number;
   rowP: number;
   colP: number;
   bandwidthT: number;
   tPixel: number;
   nThreads: number;
-}
-
-
-export interface DataRequest {
-  params: IKDVparameters | ISTKDVparameters;
-  data: number[][];
 }

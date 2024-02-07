@@ -33,7 +33,6 @@ export class KDVParamater {
 
     public getParams() {
         return {
-            kdvType: 'KDV',
             bandwidthS: this.bandwidthS,
             rowP: this.rowP,
             colP: this.colP,
@@ -65,7 +64,6 @@ export class STKDVParamater {
 
     public getParams() {
         return {
-            kdvType: 'STKDV',
             bandwidthS: this.bandwidthS,
             rowP: this.rowP,
             colP: this.colP,
