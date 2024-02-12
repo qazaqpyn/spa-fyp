@@ -26,15 +26,12 @@ export enum Phase {
 }
 
 export default function App() {
+    const [timeFrames, setTimeFrames] = useState<(string | number)[]>([]);
     const [phase, setPhase] = useState<Phase>(Phase.TYPE);
-
     const [mapData, setMapData] = useState<DataResponse>(DEFAULT_VALUES);
-
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [session, setSession] = useState<Session | null>(null);
-    // const [fileData, setFile] = useState<number[][] | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
-    // const [result, setResult] = useState<DataResponse | null>(null);
 
     const toggle = () => {
         if (!isOpen) resetSession();
@@ -50,83 +47,25 @@ export default function App() {
     useEffect(() => {
         if (phase === Phase.MAP) {
             setIsOpen(false);
+            setLoading(true);
+
+            session!
+                .fetchCalculatedData()
+                .then(() => {
+                    setMapData(session!.getCalculatedData());
+                    if (session!.type === 'STKDV') setTimeFrames(session!.getTimeFrames());
+                })
+                .finally(() => {
+                    setLoading(false);
+                });
         }
     }, [phase]);
-    // const submit = async () => {
-    //     setLoading(true);
 
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //         setResult({
-    //             middle: [-37.8839, 175.3745188667],
-    //             data: addressPoints,
-    //         });
-    //     }, 2000);
-
-    //     // const body: DataRequest = {
-    //     //     data: fileData || [],
-    //     //     params: parameters || {},
-    //     // };
-
-    //     // const data = postApi('generate', body);
-    //     // data.then((res) => {
-    //     //     setResult(res as DataResponse);
-    //     //     console.log(res);
-    //     // }).finally(() => {
-    //     //     setLoading(false);
-    //     // });
-    // };
-    // const reset = () => {
-    //     setLoading(true);
-    //     setFile(null);
-    //     setParameters(null);
-    //     setResult(null);
-    //     setLoading(false);
-    // };
-
-    // const download = () => {
-    //     // download function
-    //     setLoading(true);
-    //     setTimeout(() => {
-    //         setLoading(false);
-    //     }, 2000);
-    // };
+    const changeTimeFrame = (t: string | number) => {
+        setMapData(session!.getCalculatedData(t));
+    };
 
     return (
-        // <div>
-        //     {loading && <Loading />}
-        //     {!result && (
-        //         <>
-        //             <DragDropFile session={session!} setLoading={setLoading} />
-        //             {fileData && <Parameters session={session!} />}
-        //             {parameters && fileData && (
-        //                 <div className="next-button">
-        //                     <button id="button" className="btn" onClick={submit}>
-        //                         Generate result
-        //                     </button>
-        //                 </div>
-        //             )}
-        //         </>
-        //     )}
-        //     {result && (
-        //         <>
-        //             <h2 className="text-lg font-weight-bold text-center">Dataset Visualization on Map </h2>
-        //             <Map result={result} />
-        //             <div className="next-button">
-        //                 <button id="button" className="btn" onClick={download}>
-        //                     Download
-        //                 </button>
-        //             </div>
-        //             <div className="next-button">
-        //                 <button id="button" className="btn" onClick={reset}>
-        //                     Upload new file
-        //                 </button>
-        //             </div>
-        //         </>
-        //     )}
-
-        //     {/* {result && <Map data={result.data} middle={result.middle} />} */}
-        // </div>
         <div>
             {loading && <Loading />}
             <Title />

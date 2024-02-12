@@ -1,44 +1,36 @@
-export abstract class Data {
-    private middle: number[];
-    
-
-    constructor(middle: number[]) {
-        this.middle = middle;
-        
-    }
-
-    public getMiddle(): number[] {
-        return this.middle;
-    }
-
-    abstract getData(): (string | number)[][] | Record<string | number, (string | number)[][]>;
-}
-
-export class KDVData extends Data {
+export class KDVData {
     private data: (string | number)[][];
+    private middle: number[];
 
     constructor(middle: number[], data: (string | number)[][]) {
-        super(middle);
+        this.middle = middle;
         this.data = data;
     }
 
-    public getData(): (string | number)[][] {
-        return this.data;
+    public getData() {
+        return {
+            middle: this.middle,
+            data: this.data,
+        };
     }
 }
 
-export class STKDVData extends Data {
+export class STKDVData{
+    private middle: number[];
     private data: Record<string | number, (string | number)[][]>;
     private timeFrames:( string | number)[];
 
     constructor(middle: number[], data: Record<string | number, (string | number)[][]>) {
-        super(middle);
+        this.middle = middle;
         this.data = data;
         this.timeFrames = Object.keys(data);
     }
 
-    public getData(): Record<string | number, (string | number)[][]> {
-        return this.data;
+    public getData(key?: string | number) {
+        return {
+            middle: this.middle,
+            data: this.data[key ?? this.timeFrames[0]],
+        };
     }
 
     public getTimeFrames(): (string | number)[] {

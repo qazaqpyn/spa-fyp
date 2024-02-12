@@ -82,4 +82,13 @@ export class Session {
     public createSTKDVParmater(params: ISTKDVParams): void {
         this.stKdvParamater = new STKDVParamater(params);
     }
+
+    public getCalculatedData(t?: string | number){
+        if(this.type === 'KDV') return this.kdvCalculatedData!.getData()
+        return this.stKdvCalculatedData!.getData(t)
+    }
+
+    public getTimeFrames() {
+        return this.stKdvCalculatedData!.getTimeFrames()
+    }
 }
