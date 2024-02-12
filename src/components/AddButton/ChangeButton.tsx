@@ -4,11 +4,12 @@ import './ChangeButton.css';
 interface ChangeButtonProps {
     text: string;
     toggle: () => void;
+    editClass?: boolean;
 }
 
-export const ChangeButton: React.FC<ChangeButtonProps> = ({ text, toggle }) => {
+export const ChangeButton: React.FC<ChangeButtonProps> = ({ text, toggle, editClass = false }) => {
     return (
-        <div className="add-button-container">
+        <div className={editClass ? 'edit-button-container' : 'add-button-container'}>
             <button className="add-button" onClick={toggle}>
                 {text}
             </button>
