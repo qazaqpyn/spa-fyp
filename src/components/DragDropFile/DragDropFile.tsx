@@ -6,13 +6,14 @@ import './DragDropFile.css';
 interface DragDropFileProps {
     session: FileSession;
     setLoading: React.Dispatch<React.SetStateAction<boolean>>;
+    completeDataset: () => void;
 }
 
 interface FileSession {
     createDataset(file: File): Promise<void>;
 }
 
-export const DragDropFile: FC<DragDropFileProps> = ({ session, setLoading }) => {
+export const DragDropFile: FC<DragDropFileProps> = ({ session, setLoading, completeDataset }) => {
     const [file, setFile] = useState<File | null>(null);
     const [dragActive, setDragActive] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -36,7 +37,10 @@ export const DragDropFile: FC<DragDropFileProps> = ({ session, setLoading }) => 
         if (e.dataTransfer.files && e.dataTransfer.files[0]) {
             if (!checkFileExtension(e.dataTransfer.files[0].name)) return;
             setFile(e.dataTransfer.files[0]);
-            session.createDataset(e.dataTransfer.files[0]).finally(() => setLoading(false));
+            session.createDataset(e.dataTransfer.files[0]).finally(() => {
+                setLoading(false);
+                completeDataset();
+            });
         }
     };
 
@@ -47,7 +51,10 @@ export const DragDropFile: FC<DragDropFileProps> = ({ session, setLoading }) => 
         if (e.target.files && e.target.files[0]) {
             if (!checkFileExtension(e.target.files[0].name)) return;
             setFile(e.target.files[0]);
-            session.createDataset(e.target.files[0]).finally(() => setLoading(false));
+            session.createDataset(e.target.files[0]).finally(() => {
+                setLoading(false);
+                completeDataset();
+            });
         }
     };
 

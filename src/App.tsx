@@ -18,7 +18,16 @@ const DEFAULT_VALUES = {
     data: [],
 };
 
+export enum Phase {
+    TYPE,
+    DATASET,
+    PARAMETERS,
+    MAP,
+}
+
 export default function App() {
+    const [phase, setPhase] = useState<Phase>(Phase.TYPE);
+
     const [mapData, setMapData] = useState<DataResponse>(DEFAULT_VALUES);
 
     const [isOpen, setIsOpen] = useState<boolean>(false);
@@ -28,8 +37,21 @@ export default function App() {
     // const [result, setResult] = useState<DataResponse | null>(null);
 
     const toggle = () => {
+        if (!isOpen) resetSession();
+
         setIsOpen(!isOpen);
     };
+
+    const resetSession = () => {
+        setSession(null);
+        setPhase(Phase.TYPE);
+    };
+
+    useEffect(() => {
+        if (phase === Phase.MAP) {
+            setIsOpen(false);
+        }
+    }, [phase]);
     // const submit = async () => {
     //     setLoading(true);
 
@@ -106,12 +128,13 @@ export default function App() {
         //     {/* {result && <Map data={result.data} middle={result.middle} />} */}
         // </div>
         <div>
+            {loading && <Loading />}
             <Title />
             <Map result={mapData} />
             <AddButton toggle={toggle} />
 
             <Modal open={isOpen} onClose={toggle}>
-                <Typer setSession={setSession} />
+                <Typer session={session} setSession={setSession} setLoading={setLoading} phase={phase} setPhase={setPhase} />
             </Modal>
         </div>
     );

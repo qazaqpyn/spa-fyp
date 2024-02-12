@@ -5,6 +5,7 @@ import { IKDVParams, ISTKDVParams } from '../../repo/Paramater';
 
 interface ParametersProps {
     session: ParameterSession;
+    completeParams: () => void;
 }
 
 interface ParameterSession {
@@ -13,9 +14,7 @@ interface ParameterSession {
     createSTKDVParmater(params: ISTKDVParams): void;
 }
 
-type KdvType = 'KDV' | 'SRKDV';
-
-export const Parameters: FC<ParametersProps> = ({ session }) => {
+export const Parameters: FC<ParametersProps> = ({ session, completeParams }) => {
     const [next, setNext] = useState<boolean>(false);
     const [bandwidthS, setBandwidthS] = useState<number>(1000);
     const [rowP, setRowP] = useState<number>(800);
@@ -41,7 +40,7 @@ export const Parameters: FC<ParametersProps> = ({ session }) => {
                 nThreads,
             });
 
-        setNext(true);
+        completeParams();
     };
 
     const isKDV = session.type === 'KDV';
@@ -113,42 +112,42 @@ export const Parameters: FC<ParametersProps> = ({ session }) => {
                         />
                     </div>
                 </div>
-                ({isKDV} &&
-                <>
-                    <div className="form-group row">
-                        <label className="col-sm-7 col-form-label" htmlFor="bandwidthT">
-                            Temporal bandwidth (in terms of days)
-                        </label>
-                        <div className="col-sm">
-                            <input
-                                disabled={next}
-                                className="form-control"
-                                type="number"
-                                name="bandwidthT"
-                                id="bandwidthT"
-                                value={bandwidthT}
-                                onChange={(e) => setBandwidthT(Number(e.target.value))}
-                            />
+                {!isKDV && (
+                    <>
+                        <div className="form-group row">
+                            <label className="col-sm-7 col-form-label" htmlFor="bandwidthT">
+                                Temporal bandwidth (in terms of days)
+                            </label>
+                            <div className="col-sm">
+                                <input
+                                    disabled={next}
+                                    className="form-control"
+                                    type="number"
+                                    name="bandwidthT"
+                                    id="bandwidthT"
+                                    value={bandwidthT}
+                                    onChange={(e) => setBandwidthT(Number(e.target.value))}
+                                />
+                            </div>
                         </div>
-                    </div>
-                    <div className="form-group row">
-                        <label className="col-sm-7 col-form-label" htmlFor="tPixel">
-                            Number of grids in the t-axis
-                        </label>
-                        <div className="col-sm">
-                            <input
-                                disabled={next}
-                                className="form-control"
-                                type="number"
-                                name="tPixel"
-                                id="tPixel"
-                                value={tPixel}
-                                onChange={(e) => setTPixel(Number(e.target.value))}
-                            />
+                        <div className="form-group row">
+                            <label className="col-sm-7 col-form-label" htmlFor="tPixel">
+                                Number of grids in the t-axis
+                            </label>
+                            <div className="col-sm">
+                                <input
+                                    disabled={next}
+                                    className="form-control"
+                                    type="number"
+                                    name="tPixel"
+                                    id="tPixel"
+                                    value={tPixel}
+                                    onChange={(e) => setTPixel(Number(e.target.value))}
+                                />
+                            </div>
                         </div>
-                    </div>
-                </>
-                )
+                    </>
+                )}
                 <div className="form-group row">
                     <label className="col-sm-7 col-form-label" htmlFor="nThreads">
                         Number of threads
@@ -169,8 +168,15 @@ export const Parameters: FC<ParametersProps> = ({ session }) => {
 
             {!next && (
                 <div className="next-button">
-                    <button id="button" className="btn" onClick={setParametersHandler}>
+                    <button id="button" className="btn" onClick={() => setNext(true)}>
                         Next
+                    </button>
+                </div>
+            )}
+            {next && (
+                <div className="next-button">
+                    <button id="button" className="btn" onClick={setParametersHandler}>
+                        Generate
                     </button>
                 </div>
             )}

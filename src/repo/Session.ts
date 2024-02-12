@@ -31,7 +31,7 @@ export class Session {
         this.stKdvCalculatedData = new STKDVData(data.middle, data.data);
     }
 
-    private checkParams(): boolean {
+    public checkParams(): boolean {
         if (this.type === 'KDV') {
             return this.kdvParamater !== null;
         } else {
@@ -53,6 +53,10 @@ export class Session {
         readCSVFile(file, this.type).then((data) => {
             this.dataset!.setParsedData(data);
         });
+    }
+
+    public checkDataset(): boolean {
+        return !!this.dataset;
     }
 
     public async fetchCalculatedData() {
