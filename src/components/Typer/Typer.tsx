@@ -23,7 +23,7 @@ export const Typer: React.FC<TyperProps> = ({ session, setSession, setLoading, p
     };
 
     const completeParams = () => {
-        setPhase(Phase.MAP);
+        setPhase(Phase.FETCH);
     };
 
     const completeDataset = () => {

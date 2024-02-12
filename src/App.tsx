@@ -8,7 +8,7 @@ import { DataResponse } from './api/dto/dataDTO';
 import { addressPoints } from './assets/data';
 import { Session } from './repo/Session';
 import { Title } from './components/Title';
-import { AddButton } from './components/AddButton';
+import { ChangeButton } from './components/AddButton';
 import { Modal } from './components/Modal';
 import { Button } from './components/Button';
 import { Typer } from './components/Typer/Typer';
@@ -22,6 +22,7 @@ export enum Phase {
     TYPE,
     DATASET,
     PARAMETERS,
+    FETCH,
     MAP,
 }
 
@@ -45,7 +46,7 @@ export default function App() {
     };
 
     useEffect(() => {
-        if (phase === Phase.MAP) {
+        if (phase === Phase.FETCH) {
             setIsOpen(false);
             setLoading(true);
 
@@ -57,6 +58,7 @@ export default function App() {
                 })
                 .finally(() => {
                     setLoading(false);
+                    setPhase(Phase.MAP);
                 });
         }
     }, [phase]);
@@ -65,12 +67,18 @@ export default function App() {
         setMapData(session!.getCalculatedData(t));
     };
 
+    const changeParams = () => {
+        setPhase(Phase.PARAMETERS);
+        setIsOpen(true);
+    };
+
     return (
         <div>
             {loading && <Loading />}
             <Title />
             <Map result={mapData} />
-            <AddButton toggle={toggle} />
+            <ChangeButton text="+" toggle={toggle} />
+            {phase === Phase.MAP && <ChangeButton text="Edit" toggle={changeParams} />}
 
             <Modal open={isOpen} onClose={toggle}>
                 <Typer session={session} setSession={setSession} setLoading={setLoading} phase={phase} setPhase={setPhase} />

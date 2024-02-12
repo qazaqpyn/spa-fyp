@@ -1,15 +1,16 @@
 import React, { useState } from 'react';
-import './AddButton.css';
+import './ChangeButton.css';
 
-interface AddButtonProps {
+interface ChangeButtonProps {
+    text: string;
     toggle: () => void;
 }
 
-export const AddButton: React.FC<AddButtonProps> = ({ toggle }) => {
+export const ChangeButton: React.FC<ChangeButtonProps> = ({ text, toggle }) => {
     return (
         <div className="add-button-container">
             <button className="add-button" onClick={toggle}>
-                +
+                {text}
             </button>
         </div>
     );
