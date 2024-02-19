@@ -30,7 +30,7 @@ export enum Phase {
 export default function App() {
     const [timeFrames, setTimeFrames] = useState<(string | number)[]>([]);
     const [phase, setPhase] = useState<Phase>(Phase.TYPE);
-    const [mapData, setMapData] = useState<DataResponse>(DEFAULT_VALUES);
+    const [mapData, setMapData] = useState<DataResponse | null>(null);
     const [isOpen, setIsOpen] = useState<boolean>(false);
     const [session, setSession] = useState<Session | null>(null);
     const [loading, setLoading] = useState<boolean>(false);
@@ -42,6 +42,7 @@ export default function App() {
     };
 
     const resetSession = () => {
+        setMapData(null);
         setSession(null);
         setPhase(Phase.TYPE);
     };
@@ -79,7 +80,8 @@ export default function App() {
         <div>
             {loading && <Loading />}
             <Title />
-            <Map result={mapData} />
+            {!mapData && <Map result={DEFAULT_VALUES} />}
+            {mapData && <Map result={mapData} />}
             <ChangeButton text="+" toggle={toggle} />
             {phase === Phase.MAP && <ChangeButton text="E" toggle={changeParams} editClass />}
             {phase === Phase.MAP && session!.type === 'STKDV' && <Slider values={timeFrames} changeTime={changeTimeFrame} />}
