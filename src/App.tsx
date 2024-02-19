@@ -14,7 +14,7 @@ import { Button } from './components/Button';
 import { Typer } from './components/Typer';
 import { Slider } from './components/Slider';
 
-const DEFAULT_VALUES = {
+var DEFAULT_VALUES = {
     middle: [22.3193, 114.1694],
     data: [],
 };
@@ -42,15 +42,24 @@ export default function App() {
     };
 
     const resetSession = () => {
+        DEFAULT_VALUES.middle = [22.3193, 114.1694];
         setMapData(null);
         setSession(null);
         setPhase(Phase.TYPE);
+    };
+
+    const changingMap = () => {
+        if (mapData) {
+            DEFAULT_VALUES.middle = mapData.middle;
+            setMapData(null);
+        }
     };
 
     useEffect(() => {
         if (phase === Phase.FETCH) {
             setIsOpen(false);
             setLoading(true);
+            changingMap();
 
             session!
                 .fetchCalculatedData()
@@ -68,6 +77,7 @@ export default function App() {
     }, [phase]);
 
     const changeTimeFrame = (t: string | number) => {
+        changingMap();
         setMapData(session!.getCalculatedData(t));
     };
 
