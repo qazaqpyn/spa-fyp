@@ -79,8 +79,13 @@ export default function App() {
     }, [phase]);
 
     const changeTimeFrame = (t: string | number) => {
+        setLoading(true);
         changingMap();
-        setMapData(session!.getCalculatedData(t));
+
+        setTimeout(() => {
+            setMapData(session!.getCalculatedData(t));
+            setLoading(false);
+        }, 1000);
     };
 
     const changeParams = () => {
