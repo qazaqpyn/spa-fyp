@@ -60,7 +60,7 @@ export class Session {
     }
 
     public async fetchCalculatedData() {
-        if (!this.checkCalculatedData() || !this.checkParams()) return;
+        if (!this.checkDataset() || !this.checkParams()) return;
         
         const isKDV = this.type === 'KDV';
         const params = isKDV ? this.kdvParamater!.getParams() : this.stKdvParamater!.getParams();
@@ -72,7 +72,7 @@ export class Session {
             data: this.dataset!.getParsedData(),
         };
 
-        postApi(endpoint, body).then(createData);
+        await postApi(endpoint, body).then(createData);
     } 
 
     public createKDVParmater(params: IKDVParams): void {
